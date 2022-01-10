@@ -97,7 +97,7 @@ function [dataString] = dataFinder(fileToCheck)
 
 end
 
-%% Takes a string a hex string that fits the data structure of exp 1 and places the values in the correct slot in a matrix
+%% Takes a string a hex string that fits the data structure of exp 2 and places the values in the correct slot in a matrix
 %  1. Reshapes the data into arrays of length 17
 %  2. Gets the data from a single row and breaks into list of chars
 %     stored in the variable 'data'
@@ -116,7 +116,7 @@ function [dataMatrix] = converter_exp2(hexidicmalString)
     hexArray = strings(16, 1); % This is a numbering for the 
 
     %% Covert individual arrays into a decimal value then store into a matrix
-        % LED is 1 Byte, ADC Readings 3*2 bytes(X,Y,Z) [2,3], Voltage is 2 bytes[4,5], Current 2
+        % LED number is 1 Byte, ADC Readings 3*2 bytes(X,Y,Z) [2,3], Voltage is 2 bytes[4,5], Current 2
         % bytes[6,7], SECOND ADC readings 3*2 bytes (X,Y,Z)[8,9]
         % every row will have 9 columns hence zeros(16,9)
     
@@ -156,3 +156,63 @@ function [dataMatrix] = converter_exp2(hexidicmalString)
      
 end
 %% TODO make a converter for _exp1_
+%% Takes a string a hex string that fits the data structure of exp 1 and places the values in the correct slot in a matrix
+%  1. Reshapes the data into arrays of length 17
+%  2. Gets the data from a single row and breaks into list of chars
+%     stored in the variable 'data'
+%  3. Converts the hex data into decimal data and stores them in the
+%     correct position according to the data structure for exp 2
+%  THIS FUNCTION ASSUMES YOU HAVE THE CELL DATA ALREADY SELECTED DOES
+%  NOT GET THE DATA
+function [dataMatrix] = converter_exp1(hexidicmalString)
+    
+    %% Parses string into different arrays of length 17
+        % answer: 
+        % https://www.mathworks.com/matlabcentral/answers/109411-split-string-into-3-letter-each
+    
+    tinyMatrix = zeros(16, 9);
+    parcedMatrix = cellstr(reshape(hexidicmalString,34,[])');
+    hexArray = strings(16, 1); % This is a numbering for the 
+
+    %% Covert individual arrays into a decimal value then store into a matrix
+        % LED number is 1 Byte [1]
+        % Voltage 64 Bytes 2^6 [2...65]
+        % Current is 64 Bytes 2^6 [66...129]
+        % readings 3*2 bytes (X,Y,Z)[8,9]
+        % every row will have 9 columns hence zeros(16,9)
+    
+    for row = 1 : size(parcedMatrix, 1) %This indexes 
+        indexModifier = 2;
+        %ROW was never being updated!
+        data = cellstr(reshape(char(parcedMatrix(row)), 2,[])');
+        %reshapes the current row into a string array with 2 bytes
+        %the data is not 1 byte it is 2 bytes
+        for column = 1 : 9 %every 17 bytes make a new row 
+            %fist column is LED number, etc... with only 9
+            %1st ADC readings
+            if(column == 1)
+                hexString = data(1,column);
+                hexConversion = hex2dec(hexString);
+                hexArray(row, 1) = hexString; % This shows the literal 
+                % hex value for the LED number
+                tinyMatrix(row , 1) = hexConversion;
+           
+            end
+            if(column >= 2)
+                hexString = strcat(data(indexModifier),data(indexModifier+1)); %need to concatenate two character
+                hexConversion = hex2dec(hexString);
+                tinyMatrix(row, column) = hexConversion;
+                indexModifier = indexModifier+2;
+                %indexModifier only needs to be updated here since it is
+                %only used here
+               
+            end 
+        end 
+    end 
+    
+    %% Adding headers
+    tinyMatrix = cat(2,hexArray,tinyMatrix); %%%PROBLEM
+    headers = {'LED Hex','LED Number', 'x1', 'y1', 'z1', 'Voltage', 'Current', 'x2','y2','z2'};
+    dataMatrix = [headers; num2cell(tinyMatrix); headers];
+     
+end

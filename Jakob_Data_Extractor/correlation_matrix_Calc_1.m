@@ -13,7 +13,7 @@ clc
 % plot(wavelength,greenCMF);
 % hold off
 
-%Input Values are now dynamically collected from dataBaseCopy
+%This version contains notes on the original
 
 loadData = load('dataBase.mat'); % This loads the data matrix produced from massDataExtractor.m
 dataBaseCopy = loadData.dataBase;
@@ -72,7 +72,7 @@ for i = 1:length(EL_1)
     hold on
     plot(xx_1(i),yy_1(i),'r-o','linewidth',1.5)
     %plot(.3,.3,'ro','linewidth',1.5)
-    set(gca,'ydir','normal');
+    set(gca,'ydir','normal'); %This corrects the graph
 
     hold off
     
