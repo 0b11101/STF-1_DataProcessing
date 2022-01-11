@@ -70,6 +70,9 @@ max_x = .8;
 min_y = 0;
 max_y = .9;
 
+xx = zeros(1,24);
+yy = zeros(1,24);
+
 xx_values = zeros(24,length(dataBaseCopy));
 yy_values = zeros(24,length(dataBaseCopy));
 
@@ -122,6 +125,6 @@ for a = 1 : length(dataBaseCopy)
        hold off
       
    end
-   xx_values(:,a) = xx';
-   yy_values(:,a) = yy';
+   xx_values(a,:) = xx';
+   yy_values(a,:) = yy';
 end
