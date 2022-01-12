@@ -56,8 +56,9 @@ dataBaseCopy = loadData.dataBase;
 
     I am assuming that these values are all sample values.
 %}
-
-XYZ455 = [15327, 4000, 88192]; %455 nm
+%% Start of processing each LED based on date
+ % Todo: plot one graph for each LED and document the shifting if any
+XYZ455 = [15327, 4000, 88192]; %455 nm a rho value of what is produced here is close to 455
 XYZ465 = [487, 64, 2599];      %465 nm
 XYZ510 = [250, 26, 1196];      %510 nm
 
@@ -72,6 +73,8 @@ max_y = .9;
 
 xx_values = zeros(24,length(dataBaseCopy));
 yy_values = zeros(24,length(dataBaseCopy));
+
+rho = sqrt((xx_values.^2)+(yy_values.^2));
 
 for a = 1 : length(dataBaseCopy)
    currentDataSet = dataBaseCopy{a,2};

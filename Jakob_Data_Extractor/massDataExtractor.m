@@ -10,7 +10,7 @@ dataBase_exp2 = organizer_exp2(myFolder);
 fprintf("Data processing completed successfully.\n");
 
 save('dataBase_exp2.mat', 'dataBase_exp2');
-save('dataBase_exp1.mat', 'dataBase_exp2');
+save('dataBase_exp1.mat', 'dataBase_exp1');
 
 
 % xlswrite('experimentDataBase.xlsx', cell2mat(dataBase));
@@ -202,6 +202,7 @@ function [dataMatrix] = converter_exp2(hexidicmalString)
         % LED number is 1 Byte, ADC Readings 3*2 bytes(X,Y,Z) [2,3], Voltage is 2 bytes[4,5], Current 2
         % bytes[6,7], SECOND ADC readings 3*2 bytes (X,Y,Z)[8,9]
         % every row will have 9 columns hence zeros(16,9)
+        % process the data little endian style
     
     for row = 1 : size(parcedMatrix, 1) %This indexes 
         indexModifier = 2;
@@ -221,7 +222,7 @@ function [dataMatrix] = converter_exp2(hexidicmalString)
            
             end
             if(column >= 2)
-                hexString = strcat(data(indexModifier),data(indexModifier+1)); %need to concatenate two character
+                hexString = strcat(data(indexModifier+1),data(indexModifier)); %need to concatenate two character
                 hexConversion = hex2dec(hexString);
                 tinyMatrix(row, column) = hexConversion;
                 indexModifier = indexModifier+2;
@@ -263,6 +264,7 @@ function [dataMatrix] = converter_exp1(hexidicmalString)
             % Voltage 64 Bytes 2^6 [2...65]
             % Current is 64 Bytes 2^6 [66...65]
             % every row will have 65 columns hence zeros(24,65)
+            % process the data little endian style
         
         for row = 1 : size(parcedMatrix, 1) %This indexes 
             %ROW was never being updated!
@@ -280,7 +282,7 @@ function [dataMatrix] = converter_exp1(hexidicmalString)
                 tinyMatrix(row , 1) = hexConversion;
                 end
                 if(column >= 2)
-                    hexString = strcat(data(indexModifier),data(indexModifier+1)); %need to concatenate two character
+                    hexString = strcat(data(indexModifier+1),data(indexModifier)); %need to concatenate two character
                     hexConversion = hex2dec(hexString);
                     tinyMatrix(row, column) = hexConversion;
                     indexModifier = indexModifier+2;
