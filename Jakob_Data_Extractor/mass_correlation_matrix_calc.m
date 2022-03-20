@@ -43,10 +43,10 @@ diffused by a clear sky), hence it is also called a daylight illuminant.
 
 img = imread('CIExy1931.bmp');
 
-loadData = load('dataBase.mat'); % This loads the data matrix produced 
+loadData = load('dataBase_exp2.mat'); % This loads the data matrix produced 
                                  % from massDataExtractor.m
                                  
-dataBaseCopy = loadData.dataBase;
+dataBaseCopy = loadData.dataBase_exp2;
 %{
     T  represents the  matrix  of  the  reference measurement. S is the 
     sensor signal matrix, and K is the transformation matrix K is used to

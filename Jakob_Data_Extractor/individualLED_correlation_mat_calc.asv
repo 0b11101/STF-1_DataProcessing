@@ -3,8 +3,7 @@ clear
 close all 
 
 loadData = load('dataBase_exp2.mat'); % This loads the data matrix produced 
-                                      % from massDataExtractor.m
-img = imread('CIExy1931.bmp');
+                                      % from massDataExtractor.m                       
 exp2_dataBaseCopy = loadData.dataBase_exp2;
 
 XYZ455 = [15327, 4000, 88192]; %455 nm
@@ -22,8 +21,6 @@ max_y = .9;
 
 d65(:,1) = ones(93,1)*0.3127;
 d65(:,2) = ones(93,1)*0.3291;
-
-
 
 %{
 D65 corresponds roughly to the average midday light in Western 
@@ -44,14 +41,13 @@ yy_values = zeros(24,length(exp2_dataBaseCopy));
 
 numberOfLEDs = 24;
 for c = 2 : numberOfLEDs+1 % plus 1 since dataBase has offset
-   red = 0.0; 
+    
    figure(c-1)
    xlabel('x');
    ylabel('y');
    axis([min_x max_x min_y max_y]);
    plotChromaticity
    hold on
-   imagesc([min_x max_x], [min_y max_y], flipud(img));
    scatter(.3127,.3291)
     for a = 1 : length(exp2_dataBaseCopy)
       
@@ -117,12 +113,9 @@ for c = 2 : numberOfLEDs+1 % plus 1 since dataBase has offset
 %        xx_values(a, c-1) = xx;
 %        yy_values(a, c-1) = yy;
 
-       %y = 14.206*x^2 - 5.3012x + 0.4979 equation of the CIE graph outer
-       %line
-       if(xx > 0 && yy >= 14.206*xx^2 - 5.3012*xx + 0.4979) 
-        linecolors = [0 red 0];
-        plot([0.3127 ; xx], [0.3291; yy], 'Color', linecolors)
-        red = red+.01;
+       
+       if(xx > 0 && yy < -0.152*log(xx)-0.1835)  
+        plot([0.3127 ; xx], [0.3291; yy])
        end
         
        
@@ -131,5 +124,3 @@ for c = 2 : numberOfLEDs+1 % plus 1 since dataBase has offset
        end
        hold off
 end
-
-
